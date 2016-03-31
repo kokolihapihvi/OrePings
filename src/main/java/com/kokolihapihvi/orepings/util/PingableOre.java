@@ -1,6 +1,8 @@
 package com.kokolihapihvi.orepings.util;
 
+import com.kokolihapihvi.orepings.registry.ItemRegistry;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class PingableOre {
 
@@ -8,10 +10,12 @@ public class PingableOre {
     private int damage;
     public boolean enabled;
     public int range;
+    public String oreDictName;
 
-    public PingableOre(ItemStack stack) {
+    public PingableOre(ItemStack stack, String oreName) {
         name = stack.getDisplayName();
         damage = stack.getItemDamage();
+        oreDictName = oreName;
     }
 
     public int getDamage() {
@@ -28,5 +32,17 @@ public class PingableOre {
                 ) return true;
 
         return false;
+    }
+
+    public ItemStack getStack() {
+        ItemStack stack = new ItemStack(ItemRegistry.singleUsePing);
+
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("ore", oreDictName);
+
+        NBTTagCompound tags = new NBTTagCompound();
+        tags.setTag("OrePing", tag);
+
+        return stack;
     }
 }

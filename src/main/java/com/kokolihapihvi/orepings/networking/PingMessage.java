@@ -4,18 +4,21 @@ import com.kokolihapihvi.orepings.client.PingBlock;
 import com.kokolihapihvi.orepings.client.PingRenderer;
 import com.kokolihapihvi.orepings.config.ConfigurationHandler;
 import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class PingMessage implements IMessage {
@@ -69,47 +72,64 @@ public class PingMessage implements IMessage {
 
     public static class HANDLER implements IMessageHandler<PingMessage, IMessage> {
         @Override
-        @SideOnly(Side.CLIENT)
         public IMessage onMessage(final PingMessage message, MessageContext ctx) {
             //Only receive pings from the same dimension as the player
             if(Minecraft.getMinecraft().thePlayer.dimension != message.dimension) return null;
 
-            int range = message.range;
-            String pingOreName = message.ore;
-            World world = Minecraft.getMinecraft().theWorld;
+            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+                @Override
+                public void run() {
+                    int range = message.range;
+                    String pingOreName = message.ore;
+                    World world = Minecraft.getMinecraft().theWorld;
 
-            int pingX = (int)message.x;
-            int pingY = (int)message.y;
-            int pingZ = (int)message.z;
+                    int pingX = (int)message.x;
+                    int pingY = (int)message.y;
+                    int pingZ = (int)message.z;
 
-            for(int x = -range; x < range+1; x++) {
-                for(int y = -range; y < range; y++) {
-                    for(int z = -range-1; z < range; z ++) {
-                        int fx = x + pingX;
-                        int fy = y + pingY;
-                        int fz = z + pingZ;
+                    ItemStack stack;
 
-                        Block b = world.getBlock(fx, fy, fz);
+                    for(int x = -range; x < range+1; x++) {
+                        for(int y = -range; y < range; y++) {
+                            for(int z = -range-1; z < range; z ++) {
+                                int fx = x + pingX;
+                                int fy = y + pingY;
+                                int fz = z + pingZ;
 
-                        if(b.equals(Blocks.air)) {
-                            continue;
-                        }
+                                IBlockState b = world.getBlockState(new BlockPos(fx, fy, fz));
+                                int meta = b.getBlock().getMetaFromState(b);
 
-                        ItemStack stack = new ItemStack(b, 1, world.getBlockMetadata(fx, fy, fz));
+                                if(b.getBlock().equals(Blocks.air) ||
+                                        b.getBlock().equals(Blocks.stone) ||
+                                        b.getBlock().equals(Blocks.dirt) ||
+                                        b.getBlock().equals(Blocks.sand) ||
+                                        b.getBlock().equals(Blocks.sandstone) ||
+                                        b.getBlock().equals(Blocks.gravel)) {
+                                    continue;
+                                }
 
-                        int[] oreIds = OreDictionary.getOreIDs(stack);
+                                if(b.getBlock() instanceof BlockLiquid) continue;
+                                if(b.getBlock().hasTileEntity(b)) continue;
 
-                        if(oreIds.length == 0) continue;
+                                stack = new ItemStack(b.getBlock(), 1, meta);
 
-                        String oreName = OreDictionary.getOreName(oreIds[0]);
+                                if(stack.getItem() == null) continue;
 
-                        if(oreName.equals(pingOreName)) {
-                            PingBlock pb = new PingBlock(message.duration*(world.isRemote ? 2 : 1), fx, fy, fz, b, world);
-                            PingRenderer.AddPing(pb);
+                                int[] oreIds = OreDictionary.getOreIDs(stack);
+
+                                if(oreIds.length == 0) continue;
+
+                                String oreName = OreDictionary.getOreName(oreIds[0]);
+
+                                if(oreName.equals(pingOreName)) {
+                                    PingBlock pb = new PingBlock(message.duration*(world.isRemote ? 2 : 1), fx, fy, fz, b.getBlock(), world, oreName);
+                                    PingRenderer.AddPing(pb);
+                                }
+                            }
                         }
                     }
                 }
-            }
+            });
 
             return null;
         }

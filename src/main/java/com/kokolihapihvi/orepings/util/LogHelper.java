@@ -1,15 +1,16 @@
 package com.kokolihapihvi.orepings.util;
 
 import com.kokolihapihvi.orepings.OrePingsMod;
-import cpw.mods.fml.common.FMLLog;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * Created by Jeesus on 13.3.2016.
- */
 public class LogHelper {
+    private static Logger logger = LogManager.getLogger(OrePingsMod.MODID);
+
     public static void log(Level level, String message) {
-        FMLLog.log(OrePingsMod.NAME, level, message);
+        logger.log(level, message);
     }
 
     public static void info(String message) {

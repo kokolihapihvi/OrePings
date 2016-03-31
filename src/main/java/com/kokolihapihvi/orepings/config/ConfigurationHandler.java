@@ -24,7 +24,7 @@ public class ConfigurationHandler {
         for (String oreName : PingableOreRegistry.getList()) {
             PingableOre po = PingableOreRegistry.getOre(oreName);
             po.enabled = conf.getBoolean("enabled", oreName, true, "Is the "+po.getName()+" ping enabled?");
-            po.range = conf.getInt("range", oreName, 20, 5, 1000, "Range of "+po.getName()+" ping");
+            po.range = conf.getInt("range", oreName, 20, 5, 100, "Range of "+po.getName()+" ping");
         }
 
         pingDuration = conf.getInt("pingDuration", "General", 400, 20, 100000, "Ore visibility duration in ticks");

@@ -5,27 +5,21 @@ import com.kokolihapihvi.orepings.proxy.CommonProxy;
 import com.kokolihapihvi.orepings.registry.ItemRegistry;
 import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
 import com.kokolihapihvi.orepings.registry.RecipeRegistry;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = OrePingsMod.MODID, name = OrePingsMod.NAME, version = OrePingsMod.VERSION)
 public class OrePingsMod
 {
     public static final String NAME = "Ore Pings";
     public static final String MODID = "OrePings";
-    public static final String VERSION = "1.7.10-1.0.1";
+    public static final String VERSION = "1.7.10-1.0.0";
 
     @SidedProxy(serverSide = "com.kokolihapihvi.orepings.proxy.ServerProxy", clientSide = "com.kokolihapihvi.orepings.proxy.ClientProxy")
     public static CommonProxy proxy;
@@ -35,7 +29,7 @@ public class OrePingsMod
 
     public static CreativeTabs creativeTab;
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         creativeTab = new CreativeTabs(MODID) {
             @Override
@@ -52,7 +46,7 @@ public class OrePingsMod
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
     }
     
-    @EventHandler
+    @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
         PingableOreRegistry.init();

@@ -1,17 +1,35 @@
-run
-.gradle
-gradle
-out
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-*.class
-README.txt
-CREDITS-fml.txt
-*.iml
+# idea
+out
 *.ipr
 *.iws
-forge-1.7.10-10.13.4.1614-1.7.10-changelog.txt
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+
+CREDITS-fml.txt
+forge-1.8.9-11.15.1.1808-changelog.txt
 MinecraftForge-Credits.txt
 LICENSE-fml.txt
-gradlew
-*.bat
+Paulscode IBXM Library License.txt
+README.txt
 MinecraftForge-License.txt
+Paulscode SoundSystem CodecIBXM License.txt
+*.bat
+gradlew
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties

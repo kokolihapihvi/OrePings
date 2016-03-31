@@ -25,7 +25,7 @@ public class PingableOreRegistry {
             }
         }
 
-        oreDictOres.put(oreName, new PingableOre(stack));
+        oreDictOres.put(oreName, new PingableOre(stack, oreName));
 
         LogHelper.info("Added ping for "+oreName+" using "+stack.getItem().getItemStackDisplayName(stack));
     }

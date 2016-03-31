@@ -1,20 +1,26 @@
 package com.kokolihapihvi.orepings.client;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.kokolihapihvi.orepings.client.model.ModelBakeHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
 
 @SideOnly(Side.CLIENT)
 public class PingRenderer {
@@ -51,7 +57,7 @@ public class PingRenderer {
                 }
 
                 if(w != null) {
-                    if (w.getBlock(pb.x, pb.y, pb.z).equals(Blocks.air)) {
+                    if (w.getBlockState(pb.pos).getBlock().equals(Blocks.air)) {
                         it.remove();
                         continue;
                     }
@@ -64,7 +70,7 @@ public class PingRenderer {
     public void drawThings(RenderWorldLastEvent event) {
         if(blocks.size() == 0) return;
 
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         GL11.glPushMatrix();
 
@@ -99,63 +105,63 @@ public class PingRenderer {
         int y = pb.y;
         int z = pb.z;
 
-        Tessellator tess = Tessellator.instance;
+        WorldRenderer rend = Tessellator.getInstance().getWorldRenderer();
 
-        float minu = pb.icon.getMinU();
-        float maxu = pb.icon.getMaxU();
+        float minu = pb.tas.getMinU();
+        float maxu = pb.tas.getMaxU();
 
-        float minv = pb.icon.getMinV();
-        float maxv = pb.icon.getMaxV();
+        float minv = pb.tas.getMinV();
+        float maxv = pb.tas.getMaxV();
 
         double size = 1;
         size *= 0.5;
 
-        tess.startDrawingQuads();
+        rend.begin(GL11.GL_QUADS, POSITION_TEX);
 
         //X faces
         if(pb.drawWest) {
-            tess.addVertexWithUV(x - size, y - size, z - size, minu, maxv);
-            tess.addVertexWithUV(x - size, y - size, z + size, maxu, maxv);
-            tess.addVertexWithUV(x - size, y + size, z + size, maxu, minv);
-            tess.addVertexWithUV(x - size, y + size, z - size, minu, minv);
+            rend.pos(x - size, y - size, z - size).tex(minu, maxv).endVertex();
+            rend.pos(x - size, y - size, z + size).tex(maxu, maxv).endVertex();
+            rend.pos(x - size, y + size, z + size).tex(maxu, minv).endVertex();
+            rend.pos(x - size, y + size, z - size).tex(minu, minv).endVertex();
         }
 
         if(pb.drawEast) {
-            tess.addVertexWithUV(x + size, y + size, z - size, maxu, minv);
-            tess.addVertexWithUV(x + size, y + size, z + size, minu, minv);
-            tess.addVertexWithUV(x + size, y - size, z + size, minu, maxv);
-            tess.addVertexWithUV(x + size, y - size, z - size, maxu, maxv);
+            rend.pos(x + size, y + size, z - size).tex(maxu, minv).endVertex();
+            rend.pos(x + size, y + size, z + size).tex(minu, minv).endVertex();
+            rend.pos(x + size, y - size, z + size).tex(minu, maxv).endVertex();
+            rend.pos(x + size, y - size, z - size).tex(maxu, maxv).endVertex();
         }
 
         //Z faces
         if(pb.drawNorth) {
-            tess.addVertexWithUV(x - size, y - size, z + size, minu, maxv);
-            tess.addVertexWithUV(x + size, y - size, z + size, maxu, maxv);
-            tess.addVertexWithUV(x + size, y + size, z + size, maxu, minv);
-            tess.addVertexWithUV(x - size, y + size, z + size, minu, minv);
+            rend.pos(x - size, y - size, z + size).tex(minu, maxv).endVertex();
+            rend.pos(x + size, y - size, z + size).tex(maxu, maxv).endVertex();
+            rend.pos(x + size, y + size, z + size).tex(maxu, minv).endVertex();
+            rend.pos(x - size, y + size, z + size).tex(minu, minv).endVertex();
         }
 
         if(pb.drawSouth) {
-            tess.addVertexWithUV(x - size, y + size, z - size, maxu, minv);
-            tess.addVertexWithUV(x + size, y + size, z - size, minu, minv);
-            tess.addVertexWithUV(x + size, y - size, z - size, minu, maxv);
-            tess.addVertexWithUV(x - size, y - size, z - size, maxu, maxv);
+            rend.pos(x - size, y + size, z - size).tex(maxu, minv).endVertex();
+            rend.pos(x + size, y + size, z - size).tex(minu, minv).endVertex();
+            rend.pos(x + size, y - size, z - size).tex(minu, maxv).endVertex();
+            rend.pos(x - size, y - size, z - size).tex(maxu, maxv).endVertex();
         }
 
         if(pb.drawBottom) {
-            tess.addVertexWithUV(x - size, y - size, z - size, minu, minv);
-            tess.addVertexWithUV(x + size, y - size, z - size, maxu, minv);
-            tess.addVertexWithUV(x + size, y - size, z + size, maxu, maxv);
-            tess.addVertexWithUV(x - size, y - size, z + size, minu, maxv);
+            rend.pos(x - size, y - size, z - size).tex(minu, minv).endVertex();
+            rend.pos(x + size, y - size, z - size).tex(maxu, minv).endVertex();
+            rend.pos(x + size, y - size, z + size).tex(maxu, maxv).endVertex();
+            rend.pos(x - size, y - size, z + size).tex(minu, maxv).endVertex();
         }
 
         if(pb.drawTop) {
-            tess.addVertexWithUV(x - size, y + size, z + size, minu, maxv);
-            tess.addVertexWithUV(x + size, y + size, z + size, maxu, maxv);
-            tess.addVertexWithUV(x + size, y + size, z - size, maxu, minv);
-            tess.addVertexWithUV(x - size, y + size, z - size, minu, minv);
+            rend.pos(x - size, y + size, z + size).tex(minu, maxv).endVertex();
+            rend.pos(x + size, y + size, z + size).tex(maxu, maxv).endVertex();
+            rend.pos(x + size, y + size, z - size).tex(maxu, minv).endVertex();
+            rend.pos(x - size, y + size, z - size).tex(minu, minv).endVertex();
         }
 
-        tess.draw();
+        Tessellator.getInstance().draw();
     }
 }

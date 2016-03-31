@@ -2,8 +2,6 @@ package com.kokolihapihvi.orepings.client;
 
 import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
 import com.kokolihapihvi.orepings.util.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,12 +9,15 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /*
     Heavily based on RWTemas Dense Ores
@@ -44,9 +45,7 @@ public class PingTexture extends TextureAtlasSprite {
 
         ItemStack oreItemStack = OreDictionary.getOres(texname).get(0);
 
-        IIcon icon = Block.getBlockFromItem(oreItemStack.getItem()).getIcon(0, metadata);
-
-        texname = icon.getIconName();
+        texname = oreItemStack.getItem().delegate.getResourceName().toString();
 
         ido = texname.indexOf(':');
         if(ido > 0) {
@@ -62,7 +61,7 @@ public class PingTexture extends TextureAtlasSprite {
 
         LogHelper.info(domain+":"+texname);
 
-        return new ResourceLocation(domain,"textures/blocks/" + texname + ".png");
+        return new ResourceLocation(domain, "textures/blocks/" + texname + ".png");
     }
 
     @Override
@@ -83,7 +82,7 @@ public class PingTexture extends TextureAtlasSprite {
             IResource oreRes = manager.getResource(oreLocation);
             ore_image = ImageIO.read(oreRes.getInputStream());
 
-            animation = (AnimationMetadataSection) oreRes.getMetadata("animation");
+            animation = oreRes.getMetadata("animation");
 
             LogHelper.info((animation == null ? "no" : animation.getFrameCount())+" animation frames");
 
@@ -110,7 +109,11 @@ public class PingTexture extends TextureAtlasSprite {
 
         LogHelper.info("Output image size: "+output[0].getWidth()+" by "+output[0].getHeight());
 
-        loadSprite(output, animation, (float) Minecraft.getMinecraft().gameSettings.anisotropicFiltering > 1.0F);
+        try {
+            loadSprite(output, animation);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         LogHelper.info("Generated icon " + name + " using " + oreLocation.getResourcePath());
 
