@@ -1,0 +1,16 @@
+[
+{
+  "modid": "OrePings",
+  "name": "Ore Pings",
+  "description": "Ore pings to easily locate specific ores\nInspired by FortressCraft Evolved",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Kokolihapihvi"],
+  "credits": "RWTema: ping icon generation code based on his dense ore texture generation code\nForge team for making modding so easy <3",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
