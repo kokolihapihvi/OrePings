@@ -21,7 +21,7 @@ plugins {
 }
 */
 
-version = "1.8.9-1.0.2"
+version = "1.8.9-1.0.3"
 group= "com.kokolihapihvi.orepings" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OrePings"
 
