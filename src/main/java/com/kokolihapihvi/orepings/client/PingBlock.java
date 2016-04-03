@@ -1,6 +1,5 @@
 package com.kokolihapihvi.orepings.client;
 
-import com.kokolihapihvi.orepings.client.model.ModelBakeHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

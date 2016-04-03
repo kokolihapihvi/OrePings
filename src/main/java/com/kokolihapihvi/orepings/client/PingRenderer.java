@@ -1,13 +1,10 @@
 package com.kokolihapihvi.orepings.client;
 
-import com.kokolihapihvi.orepings.client.model.ModelBakeHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;

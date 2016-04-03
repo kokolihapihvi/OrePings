@@ -1,14 +1,11 @@
 package com.kokolihapihvi.orepings.item;
 
-import com.kokolihapihvi.orepings.client.PingTexture;
 import com.kokolihapihvi.orepings.config.ConfigurationHandler;
 import com.kokolihapihvi.orepings.networking.PacketDispatcher;
 import com.kokolihapihvi.orepings.networking.PingMessage;
 import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
 import com.kokolihapihvi.orepings.util.PingableOre;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
