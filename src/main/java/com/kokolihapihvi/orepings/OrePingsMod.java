@@ -10,15 +10,11 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = OrePingsMod.MODID, name = OrePingsMod.NAME, version = OrePingsMod.VERSION)
 public class OrePingsMod
@@ -50,6 +46,9 @@ public class OrePingsMod
         proxy.registerHandlers();
 
         ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+
+        //Register PingOreRegistry for OreRegisterEvents
+        MinecraftForge.EVENT_BUS.register(new PingableOreRegistry());
     }
     
     @EventHandler

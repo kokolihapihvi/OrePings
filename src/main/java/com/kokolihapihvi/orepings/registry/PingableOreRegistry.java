@@ -1,7 +1,9 @@
 package com.kokolihapihvi.orepings.registry;
 
+import com.kokolihapihvi.orepings.config.ConfigurationHandler;
 import com.kokolihapihvi.orepings.util.LogHelper;
 import com.kokolihapihvi.orepings.util.PingableOre;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -12,6 +14,17 @@ import java.util.Map;
 public class PingableOreRegistry {
 
     private static HashMap<String, PingableOre> oreDictOres = new HashMap<String, PingableOre>();
+
+    //Subscribe to OreRegisterEvents
+    @SubscribeEvent
+    public void oreRegister(OreDictionary.OreRegisterEvent event) {
+        if(shouldRegister(event.Name)) {
+            createPing(event.Name, event.Ore);
+
+            //It's not optimal but we don't know when this event is going to happen and those ores need to be configured too!
+            ConfigurationHandler.loadConfig(event.Name);
+        }
+    }
 
     public static void init() {
         createPings();
@@ -30,20 +43,21 @@ public class PingableOreRegistry {
         LogHelper.info("Added ping for "+oreName+" using "+stack.getItem().getItemStackDisplayName(stack));
     }
 
-    public static void unregister(String orename) {
-        if(oreDictOres.containsKey(orename)) {
-            oreDictOres.remove(orename);
-        }
+    public static boolean shouldRegister(String orename) {
+        if(OreDictionary.getOres(orename).size() == 0) return false; // needs to have items registered
+        if(!orename.startsWith("ore")) return false; // needs to start with "ore"
+        if(!(OreDictionary.getOres(orename).get(0).getItem() instanceof ItemBlock)) return false; // needs to be a block
+        if(!Character.isUpperCase(orename.charAt(3))) return false; // only ores that are formatted like oreA...
+
+        return true;
     }
 
     private static void createPings() {
         String[] allOredict = OreDictionary.getOreNames();
 
         for (String orename : allOredict) {
-            if(OreDictionary.getOres(orename).size() == 0) continue; // needs to have items registered
-            if(!orename.startsWith("ore")) continue; // needs to start with "ore"
-            if(!(OreDictionary.getOres(orename).get(0).getItem() instanceof ItemBlock)) continue; // needs to be a block
-            if(orename.startsWith("orebush")) continue; // no pings for tinkers ore bushes :(
+            //Check if this ore should be registered
+            if(!shouldRegister(orename)) continue;
 
             ItemStack stack = OreDictionary.getOres(orename).get(0);
 
