@@ -20,9 +20,6 @@ public class PingableOreRegistry {
     public void oreRegister(OreDictionary.OreRegisterEvent event) {
         if(shouldRegister(event.Name)) {
             createPing(event.Name, event.Ore);
-
-            //It's not optimal but we don't know when this event is going to happen and those ores need to be configured too!
-            ConfigurationHandler.loadConfig(event.Name);
         }
     }
 
@@ -38,7 +35,14 @@ public class PingableOreRegistry {
             }
         }
 
+        //Put it into our list
         oreDictOres.put(oreName, new PingableOre(stack));
+
+        //Load/Create config for it
+        ConfigurationHandler.loadConfig(oreName);
+
+        //Create recipe
+        RecipeRegistry.registerRecipe(oreName);
 
         LogHelper.info("Added ping for "+oreName+" using "+stack.getItem().getItemStackDisplayName(stack));
     }
