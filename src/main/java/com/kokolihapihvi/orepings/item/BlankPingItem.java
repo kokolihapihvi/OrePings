@@ -1,7 +1,6 @@
 package com.kokolihapihvi.orepings.item;
 
 import com.kokolihapihvi.orepings.OrePingsMod;
-import com.kokolihapihvi.orepings.client.PingTexture;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
