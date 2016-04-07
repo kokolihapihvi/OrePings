@@ -37,9 +37,9 @@ public class ModelBakeHandler {
 
     @SubscribeEvent
     public void onBake(ModelBakeEvent event) {
-        Object obj = event.modelRegistry.getObject(SingleUsePingItem.modelResourceLocation);
-        if(obj instanceof IBakedModel) {
-            IBakedModel model = (IBakedModel)obj;
+        IBakedModel obj = event.modelRegistry.getObject(SingleUsePingItem.modelResourceLocation);
+        if(obj != null) {
+            IBakedModel model = obj;
             event.modelRegistry.putObject(SingleUsePingItem.modelResourceLocation, new PingModel(model));
         }
     }

@@ -1,6 +1,5 @@
 package com.kokolihapihvi.orepings.client.model;
 
-import com.kokolihapihvi.orepings.util.LogHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

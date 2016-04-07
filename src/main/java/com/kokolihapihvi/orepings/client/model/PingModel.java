@@ -45,17 +45,17 @@ public class PingModel implements ISmartItemModel {
 
     @Override
     public boolean isAmbientOcclusion() {
-        return false;
+        return baseModel.isAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return false;
+        return baseModel.isGui3d();
     }
 
     @Override
     public boolean isBuiltInRenderer() {
-        return false;
+        return baseModel.isBuiltInRenderer();
     }
 
     @Override
@@ -98,6 +98,8 @@ public class PingModel implements ISmartItemModel {
     }
 
     private BakedQuad changeTexture(BakedQuad quad, TextureAtlasSprite tex) {
+        if(!(quad.getFace() == EnumFacing.SOUTH || quad.getFace() == EnumFacing.NORTH)) return quad;
+
         quad = copyQuad(quad);
 
         // 4 vertexes on each quad

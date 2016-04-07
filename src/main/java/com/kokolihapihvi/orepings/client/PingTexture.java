@@ -42,6 +42,7 @@ public class PingTexture extends TextureAtlasSprite {
         int metadata = PingableOreRegistry.getOre(texname).getDamage();
 
         ItemStack oreItemStack = OreDictionary.getOres(texname).get(0);
+        oreItemStack.setItemDamage(metadata);
 
         texname = oreItemStack.getItem().delegate.getResourceName().toString();
 
@@ -76,6 +77,18 @@ public class PingTexture extends TextureAtlasSprite {
 
         AnimationMetadataSection animation;
 
+        int mips = Minecraft.getMinecraft().gameSettings.mipmapLevels;
+
+        try {
+            //load the base image
+            IResource baseRes = manager.getResource(new ResourceLocation("orepings","textures/items/singleUsePing.png"));
+            base_image = ImageIO.read(baseRes.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            return super.load(manager, location);
+        }
+
         try {
             IResource oreRes = manager.getResource(oreLocation);
             ore_image = ImageIO.read(oreRes.getInputStream());
@@ -83,10 +96,6 @@ public class PingTexture extends TextureAtlasSprite {
             animation = oreRes.getMetadata("animation");
 
             LogHelper.info((animation == null ? "no" : animation.getFrameCount())+" animation frames");
-
-            //load the base image
-            IResource baseRes = manager.getResource(new ResourceLocation("orepings","textures/items/singleUsePing.png"));
-            base_image = ImageIO.read(baseRes.getInputStream());
 
             //If the ore icon is higher resolution, upscale the base image
             if(ore_image.getWidth() > base_image.getWidth()) {
@@ -96,10 +105,19 @@ public class PingTexture extends TextureAtlasSprite {
             LogHelper.info("Failed to generate icon " + name + " using " + oreLocation.getResourcePath());
 
             e.printStackTrace();
-            return super.load(manager, location);
-        }
 
-        int mips = Minecraft.getMinecraft().gameSettings.mipmapLevels;
+            BufferedImage[] output = new BufferedImage[1 + mips];
+
+            output[0] = base_image;
+
+            try {
+                loadSprite(output, null);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            return false;
+        }
 
         BufferedImage[] output = new BufferedImage[1 + mips];
 
