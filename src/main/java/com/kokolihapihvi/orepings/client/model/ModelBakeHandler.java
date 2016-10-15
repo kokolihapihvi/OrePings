@@ -1,10 +1,7 @@
 package com.kokolihapihvi.orepings.client.model;
 
-import com.kokolihapihvi.orepings.client.PingTexture;
-import com.kokolihapihvi.orepings.item.SingleUsePingItem;
-import com.kokolihapihvi.orepings.registry.ItemRegistry;
-import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import com.kokolihapihvi.orepings.util.LogHelper;
+import java.util.HashMap;
+
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -12,7 +9,11 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.HashMap;
+import com.kokolihapihvi.orepings.client.PingTexture;
+import com.kokolihapihvi.orepings.item.SingleUsePingItem;
+import com.kokolihapihvi.orepings.registry.ItemRegistry;
+import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
+import com.kokolihapihvi.orepings.util.LogHelper;
 
 public class ModelBakeHandler {
 

@@ -12,11 +12,8 @@ public class ClientProxy extends CommonProxy {
     public void registerHandlers() {
         super.registerHandlers();
 
-        PingRenderer pr = new PingRenderer();
-
-        MinecraftForge.EVENT_BUS.register(pr);
+        MinecraftForge.EVENT_BUS.register(new PingRenderer());
         MinecraftForge.EVENT_BUS.register(new ModelBakeHandler());
-        FMLCommonHandler.instance().bus().register(pr);
 
         ItemRenderRegister.registerModels();
     }

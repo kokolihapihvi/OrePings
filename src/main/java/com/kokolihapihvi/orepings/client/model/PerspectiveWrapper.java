@@ -52,17 +52,17 @@ public class PerspectiveWrapper implements IPerspectiveAwareModel {
 
     @Override
     public boolean isAmbientOcclusion() {
-        return model.isAmbientOcclusion();
+        return parentPerspective.isAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return model.isGui3d();
+        return parentPerspective.isGui3d();
     }
 
     @Override
     public boolean isBuiltInRenderer() {
-        return model.isBuiltInRenderer();
+        return parentPerspective.isBuiltInRenderer();
     }
 
     @Override
@@ -72,6 +72,6 @@ public class PerspectiveWrapper implements IPerspectiveAwareModel {
 
     @Override
     public ItemCameraTransforms getItemCameraTransforms() {
-        return model.getItemCameraTransforms();
+        return parentPerspective.getItemCameraTransforms();
     }
 }
