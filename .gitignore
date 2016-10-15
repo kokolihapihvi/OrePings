@@ -14,22 +14,18 @@ out
 .idea
 
 # gradle
-build
 .gradle
+build
 
 # other
 eclipse
 run
 
 CREDITS-fml.txt
-forge-1.8.9-11.15.1.1808-changelog.txt
+forge-*-changelog.txt
 MinecraftForge-Credits.txt
 LICENSE-fml.txt
 Paulscode IBXM Library License.txt
 README.txt
 MinecraftForge-License.txt
 Paulscode SoundSystem CodecIBXM License.txt
-*.bat
-gradlew
-gradle/wrapper/gradle-wrapper.jar
-gradle/wrapper/gradle-wrapper.properties
