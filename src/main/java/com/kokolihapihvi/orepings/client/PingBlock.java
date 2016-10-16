@@ -3,7 +3,7 @@ package com.kokolihapihvi.orepings.client;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,7 +25,7 @@ public class PingBlock {
         this.lifeTime = lifetime;
         oreDictName = oreName;
 
-        tas = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelFromBlockState(world.getBlockState(pos), world, pos).getParticleTexture();
+        tas = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(world.getBlockState(pos)).getParticleTexture();
 
         //Y+
         drawTop = !world.getBlockState(new BlockPos(x,y+1,z)).getBlock().equals(block);

@@ -18,8 +18,8 @@ public class PingableOreRegistry {
     //Subscribe to OreRegisterEvents
     @SubscribeEvent
     public void oreRegister(OreDictionary.OreRegisterEvent event) {
-        if(shouldRegister(event.Name)) {
-            createPing(event.Name, event.Ore);
+        if(shouldRegister(event.getName())) {
+            createPing(event.getName(), event.getOre());
         }
     }
 

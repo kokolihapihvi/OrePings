@@ -1,22 +1,23 @@
 package com.kokolihapihvi.orepings.networking;
 
-import com.kokolihapihvi.orepings.client.PingBlock;
-import com.kokolihapihvi.orepings.client.PingRenderer;
-import com.kokolihapihvi.orepings.config.ConfigurationHandler;
-import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.kokolihapihvi.orepings.client.PingBlock;
+import com.kokolihapihvi.orepings.client.PingRenderer;
+import com.kokolihapihvi.orepings.config.ConfigurationHandler;
+import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
 
 public class PingMessage implements IMessage {
 
@@ -96,12 +97,12 @@ public class PingMessage implements IMessage {
                                 IBlockState b = world.getBlockState(new BlockPos(fx, fy, fz));
                                 int meta = b.getBlock().getMetaFromState(b);
 
-                                if(b.getBlock().equals(Blocks.air) ||
-                                        b.getBlock().equals(Blocks.stone) ||
-                                        b.getBlock().equals(Blocks.dirt) ||
-                                        b.getBlock().equals(Blocks.sand) ||
-                                        b.getBlock().equals(Blocks.sandstone) ||
-                                        b.getBlock().equals(Blocks.gravel)) {
+                                if(b.getBlock().equals(Blocks.AIR) ||
+                                        b.getBlock().equals(Blocks.STONE) ||
+                                        b.getBlock().equals(Blocks.DIRT) ||
+                                        b.getBlock().equals(Blocks.SAND) ||
+                                        b.getBlock().equals(Blocks.SANDSTONE) ||
+                                        b.getBlock().equals(Blocks.GRAVEL)) {
                                     continue;
                                 }
 

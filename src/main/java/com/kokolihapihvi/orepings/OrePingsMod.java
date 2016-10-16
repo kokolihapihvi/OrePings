@@ -1,10 +1,5 @@
 package com.kokolihapihvi.orepings;
 
-import com.kokolihapihvi.orepings.config.ConfigurationHandler;
-import com.kokolihapihvi.orepings.proxy.CommonProxy;
-import com.kokolihapihvi.orepings.registry.ItemRegistry;
-import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import com.kokolihapihvi.orepings.registry.RecipeRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,11 +10,17 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.kokolihapihvi.orepings.config.ConfigurationHandler;
+import com.kokolihapihvi.orepings.proxy.CommonProxy;
+import com.kokolihapihvi.orepings.registry.ItemRegistry;
+import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
+import com.kokolihapihvi.orepings.registry.RecipeRegistry;
+
 @Mod(modid = OrePingsMod.MODID, name = OrePingsMod.NAME, version = OrePingsMod.VERSION)
 public class OrePingsMod
 {
     public static final String NAME = "Ore Pings";
-    public static final String MODID = "OrePings";
+    public static final String MODID = "ore_pings";
     public static final String VERSION = "1.8.9-1.0.3";
 
     @SidedProxy(serverSide = "com.kokolihapihvi.orepings.proxy.ServerProxy", clientSide = "com.kokolihapihvi.orepings.proxy.ClientProxy")

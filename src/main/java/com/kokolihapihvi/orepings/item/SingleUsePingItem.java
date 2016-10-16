@@ -1,29 +1,32 @@
 package com.kokolihapihvi.orepings.item;
 
-import com.kokolihapihvi.orepings.config.ConfigurationHandler;
-import com.kokolihapihvi.orepings.networking.PacketDispatcher;
-import com.kokolihapihvi.orepings.networking.PingMessage;
-import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import com.kokolihapihvi.orepings.util.PingableOre;
+import java.util.HashMap;
+import java.util.List;
+
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-import java.util.List;
+import com.kokolihapihvi.orepings.config.ConfigurationHandler;
+import com.kokolihapihvi.orepings.networking.PacketDispatcher;
+import com.kokolihapihvi.orepings.networking.PingMessage;
+import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
+import com.kokolihapihvi.orepings.util.LogHelper;
+import com.kokolihapihvi.orepings.util.PingableOre;
 
 public class SingleUsePingItem extends ItemOrePings {
-
-    public static final ModelResourceLocation modelResourceLocation = new ModelResourceLocation("orepings:singleUsePing","inventory");
     private HashMap<String, TextureAtlasSprite> textures = new HashMap<String, TextureAtlasSprite>();
 
     public SingleUsePingItem() {
@@ -65,8 +68,12 @@ public class SingleUsePingItem extends ItemOrePings {
     @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(ItemStack stack) {
         String type = getType(stack);
-
-        return super.getItemStackDisplayName(stack).replace("%ore%", PingableOreRegistry.getOre(type).getName());
+        
+        if(type.equals("UNKNOWN")) {
+        	return super.getItemStackDisplayName(stack).replace("%ore%", type);
+        } else {        	
+        	return super.getItemStackDisplayName(stack).replace("%ore%", PingableOreRegistry.getOre(type).getName());
+        }
     }
 
     @Override
@@ -81,16 +88,16 @@ public class SingleUsePingItem extends ItemOrePings {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
         if(!world.isRemote) pingOres(stack, (EntityPlayerMP)player, world);
 
         if(player.capabilities.isCreativeMode) {
-            return stack;
+            return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
         }
 
         stack.stackSize--;
 
-        return stack;
+        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
 
     private void pingOres(ItemStack pingStack, EntityPlayerMP player, World world) {
@@ -98,10 +105,11 @@ public class SingleUsePingItem extends ItemOrePings {
         double y = player.posY;
         double z = player.posZ;
 
-        PingMessage packet = new PingMessage(getType(pingStack), world.provider.getDimensionId(), (float)x, (float)y, (float)z);
+        PingMessage packet = new PingMessage(getType(pingStack), world.provider.getDimension(), (float)x, (float)y, (float)z);
 
         int range = ConfigurationHandler.pingRadius;
-        List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, AxisAlignedBB.fromBounds(x-range, y-range, z-range, x+range, y+range, z+range));
+        AxisAlignedBB aabb = new AxisAlignedBB(x-range, y-range, z-range, x+range, y+range, z+range);
+        List<EntityPlayerMP> players = world.getEntitiesWithinAABB(EntityPlayerMP.class, aabb);
 
         //Make sure the pinger sees the ping
         if(players.size() == 0) {

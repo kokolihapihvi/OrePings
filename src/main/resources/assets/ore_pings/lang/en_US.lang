@@ -1,0 +1,6 @@
+# General
+itemGroup.ore_pings=Ore Pings
+
+# Items
+item.ore_pings:blankPing.name=Blank Ore Ping
+item.ore_pings:singleUsePing.name=Single Use %ore% Ping

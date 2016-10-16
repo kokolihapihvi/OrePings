@@ -15,7 +15,7 @@ public class RecipeRegistry {
     private static ArrayList<String> registeredRecipes = new ArrayList<String>();
 
     public static void init() {
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemRegistry.blankPing, 4), "pdp", "dgd", "pdp", 'p', Items.paper, 'd', Items.diamond, 'g', Blocks.glass));
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemRegistry.blankPing, 4), "pdp", "dgd", "pdp", 'p', Items.PAPER, 'd', Items.DIAMOND, 'g', Blocks.GLASS));
 
         for (String oreDictName : PingableOreRegistry.getList()) {
             registerRecipe(oreDictName);

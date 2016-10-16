@@ -1,9 +1,14 @@
 package com.kokolihapihvi.orepings.client;
 
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -12,12 +17,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
 
 @SideOnly(Side.CLIENT)
 public class PingRenderer {
@@ -54,7 +55,7 @@ public class PingRenderer {
                 }
 
                 if(w != null) {
-                    if (w.getBlockState(pb.pos).getBlock().equals(Blocks.air)) {
+                    if (w.getBlockState(pb.pos).getBlock().equals(Blocks.AIR)) {
                         it.remove();
                         continue;
                     }
@@ -78,7 +79,7 @@ public class PingRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
 
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         for (int i = 0; i < blocks.size(); i++) {
             //In case the array size changed during this loop
@@ -102,7 +103,7 @@ public class PingRenderer {
         int y = pb.y;
         int z = pb.z;
 
-        WorldRenderer rend = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer rend = Tessellator.getInstance().getBuffer();
 
         float minu = pb.tas.getMinU();
         float maxu = pb.tas.getMaxU();
