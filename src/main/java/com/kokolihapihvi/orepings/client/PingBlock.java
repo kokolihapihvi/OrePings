@@ -1,7 +1,9 @@
 package com.kokolihapihvi.orepings.client;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,6 +18,8 @@ public class PingBlock {
     public int lifeTime;
     public String oreDictName;
     public TextureAtlasSprite tas;
+    public IBlockState bs;
+    public IBakedModel model;
 
     public PingBlock(int lifetime, int x, int y, int z, Block block, World world, String oreName) {
         this.x = x;
@@ -25,6 +29,8 @@ public class PingBlock {
         this.lifeTime = lifetime;
         oreDictName = oreName;
 
+        bs = world.getBlockState(pos);
+        model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(bs);
         tas = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(world.getBlockState(pos)).getParticleTexture();
 
         //Y+
