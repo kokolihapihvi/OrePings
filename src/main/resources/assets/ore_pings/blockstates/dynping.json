@@ -2,11 +2,11 @@
   "forge_marker": 1,
   "variants": {
     "inventory": {
-      "model": "ore_pings:ping",
+      "model": "ore_pings:dyn_ore_ping",
       "textures": {
-        "base": "forge:items/bucket_base",
-        "fluid": "forge:items/buckfet_fluid",
-        "cover": "forge:items/bucket_cover"
+        "base": "ore_pings:items/blankPing",
+        "oreMask": "ore_pings:items/oreMask",
+        "cover": "ore_pings:items/pingOverlay"
       },
       "transform": "forge:default-item",
       "custom": {

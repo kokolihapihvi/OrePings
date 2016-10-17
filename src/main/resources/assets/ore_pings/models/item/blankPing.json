@@ -1,5 +1,5 @@
 {
-    "parent": "builtin/generated",
+    "parent": "item/generated",
     "textures": {
         "layer0": "ore_pings:items/blankPing",
         "layer1": "ore_pings:items/pingOverlay"

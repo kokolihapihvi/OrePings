@@ -1,16 +1,22 @@
 package com.kokolihapihvi.orepings.client;
 
-import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,143 +29,133 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class PingRenderer {
 
-    private static ArrayList<PingBlock> blocks = new ArrayList<PingBlock>();
+	private static ArrayList<PingBlock> blocks = new ArrayList<PingBlock>();
 
-    public static void AddPing(PingBlock pb) {
-        synchronized (blocks) {
-            blocks.add(pb);
-        }
-    }
+	public static void AddPing(PingBlock pb) {
+		synchronized (blocks) {
+			blocks.add(pb);
+		}
+	}
 
-    @SubscribeEvent
-    public void tickLifetimes(TickEvent.PlayerTickEvent event) {
-        //Only run at the end of a tick
-        if(event.phase.equals(TickEvent.Phase.START)) return;
+	@SubscribeEvent
+	public void tickLifetimes(TickEvent.PlayerTickEvent event) {
+		// Only run at the end of a tick
+		if (event.phase.equals(TickEvent.Phase.START))
+			return;
 
-        World w = Minecraft.getMinecraft().theWorld;
+		World w = Minecraft.getMinecraft().theWorld;
 
-        //If the world exists
-        if(w == null) return;
+		// If the world exists
+		if (w == null)
+			return;
 
-        //If ticking client player
-        if(!event.player.equals(Minecraft.getMinecraft().thePlayer)) return;
+		// If ticking client player
+		if (!event.player.equals(Minecraft.getMinecraft().thePlayer))
+			return;
 
-        synchronized (blocks) {
-            Iterator<PingBlock> it = blocks.iterator();
-            while (it.hasNext()) {
-                PingBlock pb = it.next();
+		synchronized (blocks) {
+			Iterator<PingBlock> it = blocks.iterator();
+			while (it.hasNext()) {
+				PingBlock pb = it.next();
 
-                if (--pb.lifeTime <= 0) {
-                    it.remove();
-                    continue;
-                }
+				if (--pb.lifeTime <= 0) {
+					it.remove();
+					continue;
+				}
 
-                if(w != null) {
-                    if (w.getBlockState(pb.pos).getBlock().equals(Blocks.AIR)) {
-                        it.remove();
-                        continue;
-                    }
-                }
-            }
-        }
-    }
+				if (w != null) {
+					if (w.getBlockState(pb.pos).getBlock().equals(Blocks.AIR)) {
+						it.remove();
+						continue;
+					}
+				}
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void drawThings(RenderWorldLastEvent event) {
-        if(blocks.size() == 0) return;
+	@SubscribeEvent
+	public void drawThings(RenderWorldLastEvent event) {
+		if (blocks.size() == 0)
+			return;
 
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+		float partialTick = event.getPartialTicks();
 
-        GL11.glPushMatrix();
+		EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
 
-        //Translate into world coordinates
-        GL11.glTranslated(-player.posX + 0.5, -player.posY + 0.5, -player.posZ + 0.5);
+		GlStateManager.pushMatrix();
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+		// Translate into world coordinates
+		GlStateManager.translate(-(p.lastTickPosX + (p.posX - p.lastTickPosX) * partialTick), -(p.lastTickPosY + (p.posY - p.lastTickPosY) * partialTick), -(p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * partialTick));
 
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		// Fix offset
+		// GlStateManager.translate(0.5, 0.5, 0.5);
 
-        for (int i = 0; i < blocks.size(); i++) {
-            //In case the array size changed during this loop
-            if(i > blocks.size()) break;
+		GlStateManager.disableDepth();
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_COLOR, DestFactor.ONE_MINUS_SRC_COLOR);
 
-            PingBlock pb = blocks.get(i);
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-            if(pb != null) {
-                drawCube(pb);
-            }
-        }
+		VertexBuffer rend = Tessellator.getInstance().getBuffer();
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+		for (int i = 0; i < blocks.size(); i++) {
+			// In case the array size changed during this loop
+			if (i > blocks.size())
+				break;
 
-        GL11.glPopMatrix();
-    }
+			PingBlock pb = blocks.get(i);
 
-    private void drawCube(PingBlock pb) {
-        int x = pb.x;
-        int y = pb.y;
-        int z = pb.z;
+			if (pb != null) {
+				// Begin drawing quads
+				rend.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 
-        VertexBuffer rend = Tessellator.getInstance().getBuffer();
+				int x = pb.x;
+				int y = pb.y;
+				int z = pb.z;
 
-        float minu = pb.tas.getMinU();
-        float maxu = pb.tas.getMaxU();
+				GlStateManager.translate(x, y, z);
 
-        float minv = pb.tas.getMinV();
-        float maxv = pb.tas.getMaxV();
+				// Draw each block
+				drawCube(rend, pb);
 
-        double size = 1;
-        size *= 0.5;
+				// Finish drawing
+				Tessellator.getInstance().draw();
 
-        rend.begin(GL11.GL_QUADS, POSITION_TEX);
+				GlStateManager.translate(-x, -y, -z);
+			}
+		}
 
-        //X faces
-        if(pb.drawWest) {
-            rend.pos(x - size, y - size, z - size).tex(minu, maxv).endVertex();
-            rend.pos(x - size, y - size, z + size).tex(maxu, maxv).endVertex();
-            rend.pos(x - size, y + size, z + size).tex(maxu, minv).endVertex();
-            rend.pos(x - size, y + size, z - size).tex(minu, minv).endVertex();
-        }
+		GlStateManager.enableDepth();
+		GlStateManager.disableBlend();
 
-        if(pb.drawEast) {
-            rend.pos(x + size, y + size, z - size).tex(maxu, minv).endVertex();
-            rend.pos(x + size, y + size, z + size).tex(minu, minv).endVertex();
-            rend.pos(x + size, y - size, z + size).tex(minu, maxv).endVertex();
-            rend.pos(x + size, y - size, z - size).tex(maxu, maxv).endVertex();
-        }
+		GlStateManager.popMatrix();
+	}
 
-        //Z faces
-        if(pb.drawNorth) {
-            rend.pos(x - size, y - size, z + size).tex(minu, maxv).endVertex();
-            rend.pos(x + size, y - size, z + size).tex(maxu, maxv).endVertex();
-            rend.pos(x + size, y + size, z + size).tex(maxu, minv).endVertex();
-            rend.pos(x - size, y + size, z + size).tex(minu, minv).endVertex();
-        }
+	private void drawCube(VertexBuffer rend, PingBlock pb) {
+		if (pb.drawBottom)
+			drawFaces(rend, pb, EnumFacing.DOWN);
+		
+		if (pb.drawTop)
+			drawFaces(rend, pb, EnumFacing.UP);
+		
+		if (pb.drawNorth)
+			drawFaces(rend, pb, EnumFacing.SOUTH);
+		
+		if (pb.drawSouth)
+			drawFaces(rend, pb, EnumFacing.NORTH);
+		
+		if (pb.drawEast)
+			drawFaces(rend, pb, EnumFacing.EAST);
+		
+		if (pb.drawWest)
+			drawFaces(rend, pb, EnumFacing.WEST);
+	}
 
-        if(pb.drawSouth) {
-            rend.pos(x - size, y + size, z - size).tex(maxu, minv).endVertex();
-            rend.pos(x + size, y + size, z - size).tex(minu, minv).endVertex();
-            rend.pos(x + size, y - size, z - size).tex(minu, maxv).endVertex();
-            rend.pos(x - size, y - size, z - size).tex(maxu, maxv).endVertex();
-        }
+	private void drawFaces(VertexBuffer rend, PingBlock pb, EnumFacing facing) {
+		List<BakedQuad> quads = pb.model.getQuads(pb.bs, facing, 0);
 
-        if(pb.drawBottom) {
-            rend.pos(x - size, y - size, z - size).tex(minu, minv).endVertex();
-            rend.pos(x + size, y - size, z - size).tex(maxu, minv).endVertex();
-            rend.pos(x + size, y - size, z + size).tex(maxu, maxv).endVertex();
-            rend.pos(x - size, y - size, z + size).tex(minu, maxv).endVertex();
-        }
-
-        if(pb.drawTop) {
-            rend.pos(x - size, y + size, z + size).tex(minu, maxv).endVertex();
-            rend.pos(x + size, y + size, z + size).tex(maxu, maxv).endVertex();
-            rend.pos(x + size, y + size, z - size).tex(maxu, minv).endVertex();
-            rend.pos(x - size, y + size, z - size).tex(minu, minv).endVertex();
-        }
-
-        Tessellator.getInstance().draw();
-    }
+		for (BakedQuad quad : quads) {
+			rend.addVertexData(quad.getVertexData());
+		}
+	}
 }
