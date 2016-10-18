@@ -1,6 +1,7 @@
 package com.kokolihapihvi.orepings.client.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.kokolihapihvi.orepings.OrePingsMod;
 
 public class ModelDynPing implements IModel, IModelCustomData, IRetexturableModel {
 	public static final ModelResourceLocation LOCATION = new ModelResourceLocation(new ResourceLocation("ore_pings", "dynping"), "inventory");
@@ -55,8 +55,8 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 	// minimal Z offset to prevent depth-fighting
 	private static final float NORTH_Z_BASE = 7.496f / 16f;
 	private static final float SOUTH_Z_BASE = 8.504f / 16f;
-	private static final float NORTH_Z_FLUID = 7.498f / 16f;
-	private static final float SOUTH_Z_FLUID = 8.502f / 16f;
+	private static final float NORTH_Z_ORE = 7.498f / 16f;
+	private static final float SOUTH_Z_ORE = 8.502f / 16f;
 
 	public static final IModel MODEL = new ModelDynPing();
 
@@ -65,16 +65,18 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 	protected final ResourceLocation coverLocation;
 
 	protected final Block ore;
+	protected final int oreMeta;
 
 	public ModelDynPing() {
-		this(null, null, null, null);
+		this(null, null, null, null, 0);
 	}
 
-	public ModelDynPing(ResourceLocation baseLocation, ResourceLocation liquidLocation, ResourceLocation coverLocation, Block ore) {
+	public ModelDynPing(ResourceLocation baseLocation, ResourceLocation liquidLocation, ResourceLocation coverLocation, Block ore, int meta) {
 		this.baseLocation = baseLocation;
 		this.oreMaskLocation = liquidLocation;
 		this.coverLocation = coverLocation;
 		this.ore = ore;
+		this.oreMeta = meta;
 	}
 
 	@Override
@@ -101,11 +103,31 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 		ImmutableMap<TransformType, TRSRTransformation> transformMap = IPerspectiveAwareModel.MapWrapper.getTransforms(state);
 
 		TRSRTransformation transform = state.apply(Optional.<IModelPart> absent()).or(TRSRTransformation.identity());
+		
+		//This is why we have GC ;)
+		List<TextureAtlasSprite> oreSprites = new ArrayList<TextureAtlasSprite>();
 		TextureAtlasSprite oreSprite = null;
 		ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 
+		// Try to pick appropriate texture
 		if (ore != null) {
-			oreSprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(ore.getDefaultState()).getParticleTexture();
+			// Get block state for the metadata value
+			IBlockState oreBlockState = ore.getStateFromMeta(oreMeta);
+			List<BakedQuad> quads;
+
+			// Get quads for all sides
+			for (EnumFacing side : EnumFacing.VALUES) {
+				quads = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(oreBlockState).getQuads(oreBlockState, side, 0);
+
+				// If we have quads
+				if (quads.size() > 0) {
+					// Add all layers into our list
+					for (int i = 0; i < quads.size(); i++)
+						oreSprites.add(quads.get(i).getSprite());
+
+					break;
+				}
+			}
 		}
 
 		if (baseLocation != null) {
@@ -113,11 +135,14 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 			IBakedModel model = (new ItemLayerModel(ImmutableList.of(baseLocation))).bake(state, format, bakedTextureGetter);
 			builder.addAll(model.getQuads(null, null, 0));
 		}
-		if (oreMaskLocation != null && oreSprite != null) {
-            TextureAtlasSprite oreMaskSprite = bakedTextureGetter.apply(oreMaskLocation);
-            // build ore layer (inside)
-            builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, oreMaskSprite, oreSprite, NORTH_Z_FLUID, EnumFacing.NORTH, 0xffffffff));
-            builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, oreMaskSprite, oreSprite, SOUTH_Z_FLUID, EnumFacing.SOUTH, 0xffffffff));
+		if (oreMaskLocation != null && oreSprites.size() > 0) {
+			TextureAtlasSprite oreMaskSprite = bakedTextureGetter.apply(oreMaskLocation);
+			// build ore layers (inside)
+			for (int i = 0; i < oreSprites.size(); i++) {
+				oreSprite = oreSprites.get(i);
+				builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, oreMaskSprite, oreSprite, NORTH_Z_ORE, EnumFacing.NORTH, 0xffffffff));
+				builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, oreMaskSprite, oreSprite, SOUTH_Z_ORE, EnumFacing.SOUTH, 0xffffffff));
+			}
 		}
 		if (coverLocation != null) {
 			// cover (the actual item around the other two)
@@ -144,18 +169,21 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 	@Override
 	public ModelDynPing process(ImmutableMap<String, String> customData) {
 		String oreName = customData.get("ore");
-		
+
 		List<ItemStack> ores = OreDictionary.getOres(oreName);
 		Block ore = null;
-		
-		if(ores.size() > 0)
+		int meta = 0;
+
+		if (ores.size() > 0) {
 			ore = ((ItemBlock) ores.get(0).getItem()).block;
+			meta = ores.get(0).getMetadata();
+		}
 
 		if (ore == null)
 			ore = this.ore;
 
 		// create new model with correct liquid
-		return new ModelDynPing(baseLocation, oreMaskLocation, coverLocation, ore);
+		return new ModelDynPing(baseLocation, oreMaskLocation, coverLocation, ore, meta);
 	}
 
 	/**
@@ -180,7 +208,7 @@ public class ModelDynPing implements IModel, IModelCustomData, IRetexturableMode
 		if (textures.containsKey("cover"))
 			cover = new ResourceLocation(textures.get("cover"));
 
-		return new ModelDynPing(base, oreMask, cover, ore);
+		return new ModelDynPing(base, oreMask, cover, ore, oreMeta);
 	}
 
 	public enum LoaderDynPing implements ICustomModelLoader {
