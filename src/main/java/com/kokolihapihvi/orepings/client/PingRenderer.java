@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
@@ -86,9 +85,6 @@ public class PingRenderer {
 
 		// Translate into world coordinates
 		GlStateManager.translate(-(p.lastTickPosX + (p.posX - p.lastTickPosX) * partialTick), -(p.lastTickPosY + (p.posY - p.lastTickPosY) * partialTick), -(p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * partialTick));
-
-		// Fix offset
-		// GlStateManager.translate(0.5, 0.5, 0.5);
 
 		GlStateManager.disableDepth();
 		GlStateManager.enableBlend();

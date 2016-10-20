@@ -1,8 +1,9 @@
 package com.kokolihapihvi.orepings.util;
 
-import com.kokolihapihvi.orepings.registry.ItemRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import com.kokolihapihvi.orepings.registry.ItemRegistry;
 
 public class PingableOre {
 

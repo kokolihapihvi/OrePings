@@ -1,15 +1,16 @@
 package com.kokolihapihvi.orepings.registry;
 
-import com.kokolihapihvi.orepings.config.ConfigurationHandler;
-import com.kokolihapihvi.orepings.util.LogHelper;
-import com.kokolihapihvi.orepings.util.PingableOre;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.kokolihapihvi.orepings.config.ConfigurationHandler;
+import com.kokolihapihvi.orepings.util.LogHelper;
+import com.kokolihapihvi.orepings.util.PingableOre;
 
 public class PingableOreRegistry {
 

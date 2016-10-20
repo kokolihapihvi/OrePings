@@ -1,9 +1,10 @@
 package com.kokolihapihvi.orepings.networking;
 
-import com.kokolihapihvi.orepings.OrePingsMod;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+
+import com.kokolihapihvi.orepings.OrePingsMod;
 
 public class PacketDispatcher {
 

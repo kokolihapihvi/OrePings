@@ -1,8 +1,9 @@
 package com.kokolihapihvi.orepings.item;
 
-import com.kokolihapihvi.orepings.OrePingsMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import com.kokolihapihvi.orepings.OrePingsMod;
 
 public class ItemOrePings extends Item {
 
@@ -19,6 +20,8 @@ public class ItemOrePings extends Item {
         this();
 
         this.itemName = itemName;
+        
+        setRegistryName(itemName);
     }
 
     public String getItemName() {

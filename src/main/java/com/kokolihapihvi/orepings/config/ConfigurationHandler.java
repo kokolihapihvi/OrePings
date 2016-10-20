@@ -1,10 +1,11 @@
 package com.kokolihapihvi.orepings.config;
 
-import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import com.kokolihapihvi.orepings.util.PingableOre;
+import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
 
-import java.io.File;
+import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
+import com.kokolihapihvi.orepings.util.PingableOre;
 
 public class ConfigurationHandler {
     private static Configuration conf;

@@ -3,7 +3,6 @@ package com.kokolihapihvi.orepings.item;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +22,6 @@ import com.kokolihapihvi.orepings.config.ConfigurationHandler;
 import com.kokolihapihvi.orepings.networking.PacketDispatcher;
 import com.kokolihapihvi.orepings.networking.PingMessage;
 import com.kokolihapihvi.orepings.registry.PingableOreRegistry;
-import com.kokolihapihvi.orepings.util.LogHelper;
 import com.kokolihapihvi.orepings.util.PingableOre;
 
 public class SingleUsePingItem extends ItemOrePings {

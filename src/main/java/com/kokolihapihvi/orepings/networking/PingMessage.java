@@ -96,7 +96,8 @@ public class PingMessage implements IMessage {
 
                                 IBlockState b = world.getBlockState(new BlockPos(fx, fy, fz));
                                 int meta = b.getBlock().getMetaFromState(b);
-
+                                
+                                //Skip a few blocks that don't need checking
                                 if(b.getBlock().equals(Blocks.AIR) ||
                                         b.getBlock().equals(Blocks.STONE) ||
                                         b.getBlock().equals(Blocks.DIRT) ||
@@ -120,7 +121,7 @@ public class PingMessage implements IMessage {
                                 String oreName = OreDictionary.getOreName(oreIds[0]);
 
                                 if(oreName.equals(pingOreName)) {
-                                    PingBlock pb = new PingBlock(message.duration*(world.isRemote ? 2 : 1), fx, fy, fz, b.getBlock(), world, oreName);
+                                    PingBlock pb = new PingBlock(message.duration*(world.isRemote ? 2 : 1), fx, fy, fz, b.getBlock(), world);
                                     PingRenderer.AddPing(pb);
                                 }
                             }

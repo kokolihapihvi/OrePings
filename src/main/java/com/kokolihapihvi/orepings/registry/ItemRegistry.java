@@ -1,9 +1,11 @@
 package com.kokolihapihvi.orepings.registry;
 
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
 import com.kokolihapihvi.orepings.item.BlankPingItem;
 import com.kokolihapihvi.orepings.item.ItemOrePings;
 import com.kokolihapihvi.orepings.item.SingleUsePingItem;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemRegistry {
     public static final ItemOrePings singleUsePing = new SingleUsePingItem();
@@ -11,7 +13,7 @@ public class ItemRegistry {
 
     public static void init()
     {
-        GameRegistry.registerItem(blankPing, blankPing.getItemName());
-        GameRegistry.registerItem(singleUsePing, singleUsePing.getItemName());
+        GameRegistry.<Item>register(blankPing);
+        GameRegistry.<Item>register(singleUsePing);
     }
 }

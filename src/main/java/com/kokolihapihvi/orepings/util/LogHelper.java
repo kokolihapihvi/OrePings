@@ -1,9 +1,10 @@
 package com.kokolihapihvi.orepings.util;
 
-import com.kokolihapihvi.orepings.OrePingsMod;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.kokolihapihvi.orepings.OrePingsMod;
 
 public class LogHelper {
     private static final Logger logger = LogManager.getLogger(OrePingsMod.MODID);
