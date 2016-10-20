@@ -66,17 +66,27 @@ public class SingleUsePingItem extends ItemOrePings {
     @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(ItemStack stack) {
         String type = getType(stack);
+        String oreName;
         
-        if(type.equals("UNKNOWN")) {
-        	return super.getItemStackDisplayName(stack).replace("%ore%", type);
-        } else {        	
-        	return super.getItemStackDisplayName(stack).replace("%ore%", PingableOreRegistry.getOre(type).getName());
+        if(PingableOreRegistry.getOre(type) != null) {
+        	oreName = PingableOreRegistry.getOre(type).getName();
+        } else {
+        	oreName = "ERROR";
         }
+        
+        return super.getItemStackDisplayName(stack).replace("%ore%", oreName);        		
+
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean idklol) {
         PingableOre po = PingableOreRegistry.getOre(getType(stack));
+        
+        if(po == null) {
+        	list.add("Invalid type: " + getType(stack));
+        	return;
+        }
+        
         if(po.enabled) {
             list.add("Range: " + po.range + " blocks");
             list.add("Type: " + getType(stack));

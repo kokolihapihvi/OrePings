@@ -12,6 +12,7 @@ public class ConfigurationHandler {
 
     public static int pingDuration = 400;
     public static int pingRadius = 20;
+    public static boolean lootTables = true;
 
     public static void init(File configFile) {
         if(conf == null) {
@@ -28,6 +29,7 @@ public class ConfigurationHandler {
 
         pingDuration = conf.getInt("pingDuration", "General", 400, 20, 100000, "Ore visibility duration in ticks");
         pingRadius = conf.getInt("pingRadius", "General", 10, 0, 1000, "Players within this radius will see pinged ores");
+        lootTables = conf.getBoolean("lootTables", "General", true, "Add ore pings to random chest loot tables");
 
         if(conf.hasChanged()) {
             conf.save();
